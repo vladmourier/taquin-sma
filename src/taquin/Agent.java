@@ -3,11 +3,12 @@ package taquin;
 import model.Position;
 
 import java.util.ArrayList;
+import java.util.Observable;
 
 /**
  * Created by Vlad on 12/12/2016.
  */
-public class Agent extends Thread {
+public class Agent extends Observable implements Runnable {
 
     private int idAgent;
     private ArrayList<Agent> agents;
@@ -58,7 +59,8 @@ public class Agent extends Thread {
     }
 
     public void run() {
-
+        setChanged();
+        notifyObservers();
     }
 
     public int getIdAgent() {
