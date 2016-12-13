@@ -1,5 +1,6 @@
 package ui;
 
+import model.Agent;
 import javax.swing.*;
 import java.awt.*;
 import java.util.Observable;
@@ -42,6 +43,14 @@ public class Window extends JFrame implements Observer {
     }
 
     public void drawAgents() {
+        int[][] agentGrid = Agent.grid;
+        int iMax = agentGrid.length;
+        for(int i = 0; i < iMax; i++){
+            int jMax = agentGrid[i].length;
+            for(int j = 0; j<jMax; j++){
+                this.Grid[i][j].setBackground(getColorAccordingToId(agentGrid[i][j]));
+            }
+        }
     }
 
     private static Color getColorAccordingToId(int id) {
