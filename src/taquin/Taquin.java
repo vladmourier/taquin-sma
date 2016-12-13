@@ -1,6 +1,7 @@
 package taquin;
 
 import model.Position;
+import ui.Window;
 
 import java.util.ArrayList;
 
@@ -14,6 +15,7 @@ public class Taquin {
         boolean collision = true;
         int n = 5;
         int[][] grid = new int[n][n];
+        Window window = new Window(n,n);
 
         for (int j=0; j<n; j++) {
             for (int k=0; k<n; k++) {
@@ -37,6 +39,7 @@ public class Taquin {
             if (!collision) {
                 Agent agent = new Agent(i, start, new Position(xGoal, yGoal));
                 agents.add(agent);
+                agent.addObserver(window);
                 grid[x][y] = agent.getIdAgent();
             } else {
                 i--;
@@ -45,5 +48,6 @@ public class Taquin {
         }
         Agent.updateGrid(grid);
         Agent.displayGrid();
+        window.drawAgents();
     }
 }
