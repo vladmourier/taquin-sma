@@ -46,6 +46,9 @@ public class Taquin {
             }
             i++;
         }
+        for (Agent a : agents) {
+            a.setAgents(agents);
+        }
         Agent.updateGrid(grid);
         Agent.displayGrid();
         window.drawAgents();

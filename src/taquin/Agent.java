@@ -5,6 +5,8 @@ import model.Position;
 import java.util.ArrayList;
 import java.util.Observable;
 
+import static java.lang.Thread.sleep;
+
 /**
  * Created by Vlad on 12/12/2016.
  */
@@ -56,6 +58,45 @@ public class Agent extends Observable implements Runnable {
                 }
             }
         }
+    }
+
+    public boolean move(Directions direction) {
+        try {
+            sleep(1000);
+        } catch (Exception e) {
+            System.err.println(e.getMessage());
+        }
+        boolean safe = true;
+        Position position = new Position();
+        switch(direction) {
+            case UP:
+                position = new Position(getCurrent().getX(), getCurrent().getY()-1);
+                break;
+            case DOWN:
+                position = new Position(getCurrent().getX(), getCurrent().getY()+1);
+                break;
+            case LEFT:
+                position = new Position(getCurrent().getX()-1, getCurrent().getY());
+                break;
+            case RIGHT:
+                position = new Position(getCurrent().getX()+1, getCurrent().getY());
+        }
+        if (position.getX() < 0 || position.getX() >= grid.length || position.getY() < 0 || position.getY() >= grid.length) {
+            safe = false;
+        }
+        for (Agent a : agents) {
+            if (a.getCurrent().equals(position)) {
+                safe = false;
+            }
+        }
+        if (safe) {
+            grid[getCurrent().getX()][getCurrent().getY()] = 0;
+            grid[position.getX()][position.getY()] = idAgent;
+            this.setCurrent(position);
+            setChanged();
+            notifyObservers();
+        }
+        return safe;
     }
 
     public void run() {
