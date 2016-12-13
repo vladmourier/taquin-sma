@@ -25,6 +25,10 @@ public class Agent extends Thread {
         this.goal = goal;
     }
 
+    public static int[][] getGrid() {
+        return grid;
+    }
+
 
     public void setCurrent(Position current) {
         this.current = current;
