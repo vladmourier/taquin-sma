@@ -1,3 +1,4 @@
+import taquin.Agent;
 import ui.Window;
 
 /**
