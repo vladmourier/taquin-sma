@@ -4,11 +4,13 @@ import model.Position;
 import ui.Window;
 
 import java.util.ArrayList;
+import java.util.Random;
 
 /**
  * Created by Bastien on 12/12/2016.
  */
 public class Taquin {
+    static ArrayList<Agent> agents = new ArrayList<Agent>();
 
     public static void main(String[] args) {
         int nbAgents = 6;
@@ -22,7 +24,6 @@ public class Taquin {
                 grid[j][k] = 0;
             }
         }
-        ArrayList<Agent> agents = new ArrayList<Agent>();
         int i = 0;
         while (i <= nbAgents) {
             collision = false;
@@ -52,5 +53,18 @@ public class Taquin {
         Agent.updateGrid(grid);
         Agent.displayGrid();
         window.drawAgents();
+
+        for (Agent a :
+                agents) {
+            a.sendMessage(new Random().nextInt(6)+1, "'TEST' from " + a.getIdAgent());
+        }
+    }
+
+
+    public static boolean isComplete(){
+        for(Agent agent : agents){
+            if(!agent.goalAchieved()) return false;
+        }
+        return true;
     }
 }

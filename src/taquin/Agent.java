@@ -1,6 +1,9 @@
 package taquin;
 
+import model.communication.AgentSocket;
 import model.Position;
+import model.communication.events.MessageReceivedEvent;
+import model.communication.events.MessageReceivedListener;
 
 import java.util.ArrayList;
 import java.util.Observable;
@@ -10,12 +13,15 @@ import static java.lang.Thread.sleep;
 /**
  * Created by Vlad on 12/12/2016.
  */
-public class Agent extends Observable implements Runnable {
+public class Agent extends Observable implements Runnable, MessageReceivedListener {
 
     private int idAgent;
     private ArrayList<Agent> agents;
+    private ArrayList<String> messageQueue = new ArrayList<>();
+    private AgentSocket agentSocket;
     private Position current;
     private Position goal;
+
     private static int[][] grid;
 
     public boolean goalAchieved() {
@@ -26,6 +32,9 @@ public class Agent extends Observable implements Runnable {
         this.idAgent = idAgent;
         this.current = start;
         this.goal = goal;
+        this.agentSocket = new AgentSocket(idAgent);
+        this.agentSocket.addMessageReceivedListener(this);
+        //new Thread(agentSocket).start();
     }
 
     public static int[][] getGrid() {
@@ -100,8 +109,10 @@ public class Agent extends Observable implements Runnable {
     }
 
     public void run() {
-        setChanged();
-        notifyObservers();
+        while(!Taquin.isComplete()){
+            setChanged();
+            notifyObservers();
+        }
     }
 
     public int getIdAgent() {
@@ -110,5 +121,14 @@ public class Agent extends Observable implements Runnable {
 
     public void setIdAgent(int idAgent) {
         this.idAgent = idAgent;
+    }
+
+    public void sendMessage(int recipient, String msg) {
+        this.agentSocket.sendMessage(recipient, msg);
+    }
+
+    @Override
+    public void messageReceived(MessageReceivedEvent event) {
+        messageQueue.add(event.getSource().getLastReceivedMessage());
     }
 }
