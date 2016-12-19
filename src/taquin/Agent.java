@@ -113,21 +113,35 @@ public class Agent extends Observable implements Runnable, MessageReceivedListen
     public void run() {
         while (!Taquin.isComplete()) {
             Directions toGo = null;
-            System.out.println("Je suis l'agent : " + getIdAgent() + " je suis en " + getCurrent() + " et je vais en " + goal);
             if (!getCurrent().equals(goal)) {
                 int vector_x = goal.getX() - getCurrent().getX();
                 int vector_y = goal.getY() - getCurrent().getY();
 
                 if (vector_x != 0 || vector_y != 0) {
-                    if (new Random().nextBoolean()) {
+                    if (new Random().nextBoolean() && vector_x != 0) {
                         toGo = vector_x > 0 ? DOWN : UP;
-                    } else {
+                    } else if ( vector_y != 0) {
                         toGo = vector_y > 0 ? RIGHT : LEFT;
                     }
                 }
             }
-            if (toGo != null)
-                move(toGo);
+            if (toGo != null) {
+                System.out.println("Je suis l'agent : " + getIdAgent() + " je suis en " + getCurrent() + " et je vais en " + goal);
+                if(!move(toGo))
+                {
+                    switch (toGo){
+                        case UP:
+                        case DOWN:
+                            move(new Random().nextBoolean() ? LEFT : RIGHT);
+                            break;
+
+                        case LEFT:
+                        case RIGHT:
+                            move(new Random().nextBoolean() ? UP : DOWN);
+                            break;
+                    }
+                }
+            }
             setChanged();
             notifyObservers();
         }

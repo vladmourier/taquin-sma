@@ -29,8 +29,6 @@ public class Taquin {
             collision = false;
             int x = (int)(Math.random() * n);
             int y = (int)(Math.random() * n);
-            int xGoal = (int)(Math.random() * n);
-            int yGoal = (int)(Math.random() * n);
             Position start = new Position(x,y);
             for (Agent a : agents) {
                 if (start.equals(a.getCurrent()))  {
@@ -38,7 +36,7 @@ public class Taquin {
                 }
             }
             if (!collision) {
-                Agent agent = new Agent(i, start, new Position(xGoal, yGoal));
+                Agent agent = new Agent(i, start, new Position((i/grid.length), i%grid.length));
                 agents.add(agent);
                 agent.addObserver(window);
                 grid[x][y] = agent.getIdAgent();

@@ -1,6 +1,7 @@
 package ui;
 
 import taquin.Agent;
+
 import javax.swing.*;
 import java.awt.*;
 import java.util.Observable;
@@ -15,7 +16,7 @@ public class Window extends JFrame implements Observer {
     private final int xSize = 600;
     private final int ySize = 600;
 
-    private JPanel[][] Grid;
+    private AgentPanel[][] Grid;
 
 
     public Window(int gridSizeVertical, int gridSizeHorizontal) {
@@ -24,14 +25,14 @@ public class Window extends JFrame implements Observer {
         this.setLocationRelativeTo(null);
         this.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
 
-        this.Grid = new JPanel[gridSizeHorizontal][gridSizeVertical];
+        this.Grid = new AgentPanel[gridSizeHorizontal][gridSizeVertical];
 
         this.setLayout(new GridLayout(gridSizeVertical, gridSizeHorizontal));
 
         int k = 1;
         for (int i = 0; i < gridSizeHorizontal; i++) {
             for (int j = 0; j < gridSizeVertical; j++) {
-                JPanel p = new JPanel();
+                AgentPanel p = new AgentPanel();
                 p.setBackground(getColorAccordingToId(0));
                 Grid[i][j] = p;
                 this.add(p);
@@ -45,10 +46,15 @@ public class Window extends JFrame implements Observer {
     public void drawAgents() {
         int[][] agentGrid = Agent.getGrid();
         int iMax = agentGrid.length;
-        for(int i = 0; i < iMax; i++){
+        for (int i = 0; i < iMax; i++) {
             int jMax = agentGrid[i].length;
-            for(int j = 0; j<jMax; j++){
+            for (int j = 0; j < jMax; j++) {
                 this.Grid[i][j].setBackground(getColorAccordingToId(agentGrid[i][j]));
+                if (agentGrid[i][j] != 0) {
+                    this.Grid[i][j].displayInformations();
+                } else {
+                    this.Grid[i][j].hideInformations();
+                }
             }
         }
     }
