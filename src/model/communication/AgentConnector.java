@@ -10,7 +10,7 @@ import java.io.OutputStream;
  * Provides common parameters (streams) in order to establish communication
  */
 class AgentConnector {
-    static int BASE_SERVER_PORT = 4000;
+    static int BASE_SERVER_PORT = 18200;
 
     InputStream IS;
     OutputStream OS;

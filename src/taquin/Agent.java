@@ -61,10 +61,10 @@ public class Agent extends Observable implements Runnable, MessageReceivedListen
     }
 
     public static void displayGrid() {
-        for (int i = 0; i < grid.length; i++) {
-            for (int j = 0; j < grid.length; j++) {
+        for (int i=0; i<grid.length; i++) {
+            for (int j=0; j<grid.length; j++) {
                 System.out.print(grid[i][j] + " ");
-                if (j == grid.length - 1) {
+                if(j == grid.length - 1) {
                     System.out.println(" ");
                 }
             }
@@ -79,18 +79,18 @@ public class Agent extends Observable implements Runnable, MessageReceivedListen
         }
         boolean safe = true;
         Position position = new Position();
-        switch (direction) {
-            case UP:
-                position = new Position(getCurrent().getX(), getCurrent().getY() - 1);
-                break;
-            case DOWN:
-                position = new Position(getCurrent().getX(), getCurrent().getY() + 1);
-                break;
+        switch(direction) {
             case LEFT:
-                position = new Position(getCurrent().getX() - 1, getCurrent().getY());
+                position = new Position(getCurrent().getX(), getCurrent().getY()-1);
                 break;
             case RIGHT:
-                position = new Position(getCurrent().getX() + 1, getCurrent().getY());
+                position = new Position(getCurrent().getX(), getCurrent().getY()+1);
+                break;
+            case UP:
+                position = new Position(getCurrent().getX()-1, getCurrent().getY());
+                break;
+            case DOWN:
+                position = new Position(getCurrent().getX()+1, getCurrent().getY());
         }
         if (position.getX() < 0 || position.getX() >= grid.length || position.getY() < 0 || position.getY() >= grid.length) {
             safe = false;
