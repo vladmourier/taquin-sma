@@ -54,9 +54,8 @@ public class Taquin {
         Agent.displayGrid();
         window.drawAgents();
 
-        for (Agent a :
-                agents) {
-            a.sendMessage(new Random().nextInt(6)+1, "'TEST' from " + a.getIdAgent());
+        for (Agent a :agents) {
+            new Thread(a).start();
         }
     }
 
