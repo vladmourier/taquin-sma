@@ -13,8 +13,8 @@ public class Taquin {
     static ArrayList<Agent> agents = new ArrayList<Agent>();
 
     public static void main(String[] args) {
-        int nbAgents = 6;
-        boolean collision = true;
+        int nbAgents = 5;
+        boolean collision;
         int n = 5;
         int[][] grid = new int[n][n];
         Window window = new Window(n,n);
@@ -24,7 +24,7 @@ public class Taquin {
                 grid[j][k] = 0;
             }
         }
-        int i = 0;
+        int i = 1;
         while (i <= nbAgents) {
             collision = false;
             int x = (int)(Math.random() * n);
@@ -54,9 +54,8 @@ public class Taquin {
         Agent.displayGrid();
         window.drawAgents();
 
-        for (Agent a :
-                agents) {
-            a.sendMessage(new Random().nextInt(6)+1, "'TEST' from " + a.getIdAgent());
+        for (Agent a : agents) {
+            a.sendMessage(new Random().nextInt(6) + 1, "'TEST' from " + a.getIdAgent());
         }
     }
 

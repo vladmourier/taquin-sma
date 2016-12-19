@@ -78,16 +78,16 @@ public class Agent extends Observable implements Runnable, MessageReceivedListen
         boolean safe = true;
         Position position = new Position();
         switch(direction) {
-            case UP:
+            case LEFT:
                 position = new Position(getCurrent().getX(), getCurrent().getY()-1);
                 break;
-            case DOWN:
+            case RIGHT:
                 position = new Position(getCurrent().getX(), getCurrent().getY()+1);
                 break;
-            case LEFT:
+            case UP:
                 position = new Position(getCurrent().getX()-1, getCurrent().getY());
                 break;
-            case RIGHT:
+            case DOWN:
                 position = new Position(getCurrent().getX()+1, getCurrent().getY());
         }
         if (position.getX() < 0 || position.getX() >= grid.length || position.getY() < 0 || position.getY() >= grid.length) {
