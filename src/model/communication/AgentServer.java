@@ -66,6 +66,8 @@ public class AgentServer extends AgentConnector implements Runnable{
                     lastReceivedMessage = new String(buffer);
                     fireChangeEvent();
                 }
+                this.BIS.close();
+                serverResponseSocket.close();
             }
         } catch (IOException e) {
             e.printStackTrace();

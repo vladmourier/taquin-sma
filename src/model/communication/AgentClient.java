@@ -9,18 +9,21 @@ import java.net.Socket;
  */
 class AgentClient extends AgentConnector {
 
-    AgentClient(){};
+    AgentClient() {
+    }
 
-    void send(int agentRecipient, String message){
+    void send(int agentRecipient, String message) {
         try {
             Socket socket = new Socket("localhost", AgentConnector.BASE_SERVER_PORT + agentRecipient);
+//            System.out.println("Socket local port : " + socket.getLocalPort());
             this.OS = socket.getOutputStream();
             this.BOS = new BufferedOutputStream(OS);
-
             this.BOS.write(message.getBytes());
             this.BOS.flush();
-        }catch(Exception e){
-            e.printStackTrace();
+            this.BOS.close();
+            socket.close();
+        } catch (Exception e) {
+//            System.err.println("Tentative de connexion au port : " + (AgentConnector.BASE_SERVER_PORT + agentRecipient));
         }
     }
 }

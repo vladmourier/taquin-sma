@@ -10,12 +10,12 @@ import java.util.Random;
  * Created by Bastien on 12/12/2016.
  */
 public class Taquin {
-    static ArrayList<Agent> agents = new ArrayList<Agent>();
+    public static ArrayList<Agent> agents = new ArrayList<Agent>();
 
     public static void main(String[] args) {
-        int nbAgents = 6;
+        int nbAgents = 8;
         boolean collision = true;
-        int n = 5;
+        int n = 4;
         int[][] grid = new int[n][n];
         Window window = new Window(n,n);
 
@@ -25,7 +25,7 @@ public class Taquin {
             }
         }
         int i = 0;
-        while (i <= nbAgents) {
+        while (i < nbAgents) {
             collision = false;
             int x = (int)(Math.random() * n);
             int y = (int)(Math.random() * n);
@@ -36,7 +36,7 @@ public class Taquin {
                 }
             }
             if (!collision) {
-                Agent agent = new Agent(i, start, new Position((i/grid.length), i%grid.length));
+                Agent agent = new Agent(i+1, start, new Position((i/grid.length), i%grid.length));
                 agents.add(agent);
                 agent.addObserver(window);
                 grid[x][y] = agent.getIdAgent();
