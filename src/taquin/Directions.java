@@ -8,4 +8,8 @@ public enum Directions {
     DOWN,
     LEFT,
     RIGHT;
+
+    public static Directions[] getAll(){
+        return new Directions[]{UP, DOWN, LEFT, RIGHT};
+    }
 }

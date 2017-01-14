@@ -1,5 +1,9 @@
 package ui;
 
+import model.Position;
+import taquin.Agent;
+import taquin.Taquin;
+
 import javax.swing.*;
 import java.awt.*;
 
@@ -8,21 +12,40 @@ import java.awt.*;
  */
 public class AgentPanel extends JPanel {
 
-    Label goal = new Label("GOAL");
-    Label ID = new Label("TEST");
-
+    Label goal;
+    Label ID;
+    Label InPosition;
 
     AgentPanel() {
+        this.goal = new Label();
+        this.ID = new Label();
+        this.InPosition = new Label();
+        this.setLayout(new GridLayout(3, 3));
+        this.add(goal);
+        this.add(ID);
+        this.add(InPosition);
     }
 
     public void displayInformations() {
-        this.add(goal);
-        this.add(ID);
+        this.goal.setVisible(true);
+        this.ID.setVisible(true);
+        this.InPosition.setVisible(true);
         this.updateUI();
     }
 
     public void hideInformations() {
-        this.remove(goal);
-        this.remove(ID);
+        this.goal.setVisible(false);
+        this.ID.setVisible(false);
+        this.InPosition.setVisible(false);
+    }
+
+    public void updateInformations(Agent agent) {
+        this.goal.setText(agent.getGoal().toString());
+        this.ID.setText(agent.getIdAgent() + "");
+        this.InPosition.setText(agent.goalAchieved() + "");
+
+        this.goal.setBackground(getBackground());
+        this.InPosition.setBackground(agent.goalAchieved() ? Color.white : getBackground());
+        this.ID.setBackground(getBackground());
     }
 }

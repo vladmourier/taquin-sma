@@ -1,5 +1,6 @@
 package taquin;
 
+import javafx.geometry.Pos;
 import model.communication.AgentSocket;
 import model.Position;
 import model.communication.events.MessageReceivedEvent;
@@ -36,7 +37,6 @@ public class Agent extends Observable implements Runnable, MessageReceivedListen
         this.goal = goal;
         this.agentSocket = new AgentSocket(idAgent);
         this.agentSocket.addMessageReceivedListener(this);
-        //new Thread(agentSocket).start();
     }
 
     public static int[][] getGrid() {
@@ -61,37 +61,19 @@ public class Agent extends Observable implements Runnable, MessageReceivedListen
     }
 
     public static void displayGrid() {
-        for (int i=0; i<grid.length; i++) {
-            for (int j=0; j<grid.length; j++) {
+        for (int i = 0; i < grid.length; i++) {
+            for (int j = 0; j < grid.length; j++) {
                 System.out.print(grid[i][j] + " ");
-                if(j == grid.length - 1) {
+                if (j == grid.length - 1) {
                     System.out.println(" ");
                 }
             }
         }
     }
 
-    public boolean move(Directions direction) {
-        try {
-            sleep(1000);
-        } catch (Exception e) {
-            System.err.println(e.getMessage());
-        }
+    private boolean isSafeDirection(Directions direction) {
         boolean safe = true;
-        Position position = new Position();
-        switch(direction) {
-            case LEFT:
-                position = new Position(getCurrent().getX(), getCurrent().getY()-1);
-                break;
-            case RIGHT:
-                position = new Position(getCurrent().getX(), getCurrent().getY()+1);
-                break;
-            case UP:
-                position = new Position(getCurrent().getX()-1, getCurrent().getY());
-                break;
-            case DOWN:
-                position = new Position(getCurrent().getX()+1, getCurrent().getY());
-        }
+        Position position = getNextPosition(direction);
         if (position.getX() < 0 || position.getX() >= grid.length || position.getY() < 0 || position.getY() >= grid.length) {
             safe = false;
         }
@@ -100,6 +82,18 @@ public class Agent extends Observable implements Runnable, MessageReceivedListen
                 safe = false;
             }
         }
+        return safe;
+    }
+
+    public boolean move(Directions direction) {
+//        try {
+//            sleep(100);
+//        } catch (Exception e) {
+//            System.err.println(e.getMessage());
+//        }
+        Position position = getNextPosition(direction);
+        boolean safe = isSafeDirection(direction);
+
         if (safe) {
             grid[getCurrent().getX()][getCurrent().getY()] = 0;
             grid[position.getX()][position.getY()] = idAgent;
@@ -112,39 +106,60 @@ public class Agent extends Observable implements Runnable, MessageReceivedListen
 
     public void run() {
         while (!Taquin.isComplete()) {
+            boolean hasMoved = false;
             Directions toGo = null;
-            if (!getCurrent().equals(goal)) {
+            Directions[] possibleDir = Directions.getAll();
+
+            if (!messageQueue.isEmpty()) {
+                toGo = possibleDir[0];
+                int i = 1;
+                while (i < possibleDir.length && !isSafeDirection(toGo)) {
+                    toGo = possibleDir[i];
+                    i++;
+                }
+
+                hasMoved = move(toGo);
+//                System.out.println(getIdAgent() + "moved following request");
+                messageQueue.clear();
+
+            } else if (!getCurrent().equals(goal)) {
                 int vector_x = goal.getX() - getCurrent().getX();
                 int vector_y = goal.getY() - getCurrent().getY();
 
                 if (vector_x != 0 || vector_y != 0) {
                     if (new Random().nextBoolean() && vector_x != 0) {
                         toGo = vector_x > 0 ? DOWN : UP;
-                    } else if ( vector_y != 0) {
+                    } else if (vector_y != 0) {
                         toGo = vector_y > 0 ? RIGHT : LEFT;
                     }
                 }
-            }
-            if (toGo != null) {
-                System.out.println("Je suis l'agent : " + getIdAgent() + " je suis en " + getCurrent() + " et je vais en " + goal);
-                if(!move(toGo))
-                {
-                    switch (toGo){
-                        case UP:
-                        case DOWN:
-                            move(new Random().nextBoolean() ? LEFT : RIGHT);
-                            break;
-
-                        case LEFT:
-                        case RIGHT:
-                            move(new Random().nextBoolean() ? UP : DOWN);
-                            break;
+                if (toGo != null) {
+                    if (!(hasMoved = move(toGo))) {
+                        switch (toGo) {
+                            case UP:
+                            case DOWN:
+                                hasMoved = move(new Random().nextBoolean() ? LEFT : RIGHT);
+                                break;
+                            case LEFT:
+                            case RIGHT:
+                                hasMoved = move(new Random().nextBoolean() ? UP : DOWN);
+                                break;
+                        }
                     }
                 }
             }
-            setChanged();
-            notifyObservers();
+            if (!hasMoved && !goalAchieved()) {
+                if (toGo == null) {
+                    toGo = possibleDir[new Random().nextInt(possibleDir.length)];
+                }
+                Position next = getNextPosition(toGo);
+                sendMessage(grid[next.getX()][next.getY()], "MOVE");
+            }
         }
+        setChanged();
+        notifyObservers();
+        System.out.println(goalAchieved() ? "Le numéro " + getIdAgent() + " est en place" : "");
+        displayGrid();
     }
 
     public int getIdAgent() {
@@ -156,11 +171,33 @@ public class Agent extends Observable implements Runnable, MessageReceivedListen
     }
 
     public void sendMessage(int recipient, String msg) {
-        this.agentSocket.sendMessage(recipient, msg);
+        if (recipient != this.getIdAgent() && recipient > 0) {
+//            System.out.println("Agent :" + getIdAgent() + "request " + recipient + " to move");
+            this.agentSocket.sendMessage(recipient, msg);
+        }
+    }
+
+    Position getNextPosition(Directions d) {
+        switch (d) {
+            case UP:
+                return new Position(Math.max(getCurrent().getX() - 1, 0), getCurrent().getY());
+            case DOWN:
+                return new Position(Math.min(getCurrent().getX() + 1, grid.length - 1), getCurrent().getY());
+            case LEFT:
+                return new Position(getCurrent().getX(), Math.max(getCurrent().getY() - 1, 0));
+            case RIGHT:
+                return new Position(getCurrent().getX(), Math.min(getCurrent().getY() + 1, grid[getCurrent().getX()].length - 1));
+        }
+        return null;
+    }
+
+    public Position getGoal() {
+        return goal;
     }
 
     @Override
     public void messageReceived(MessageReceivedEvent event) {
+//        System.out.println("Je suis : " + idAgent + "     Reçu : " + event.getSource().getLastReceivedMessage());
         messageQueue.add(event.getSource().getLastReceivedMessage());
     }
 }

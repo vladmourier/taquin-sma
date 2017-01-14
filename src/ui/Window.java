@@ -1,6 +1,7 @@
 package ui;
 
 import taquin.Agent;
+import taquin.Taquin;
 
 import javax.swing.*;
 import java.awt.*;
@@ -49,8 +50,10 @@ public class Window extends JFrame implements Observer {
         for (int i = 0; i < iMax; i++) {
             int jMax = agentGrid[i].length;
             for (int j = 0; j < jMax; j++) {
-                this.Grid[i][j].setBackground(getColorAccordingToId(agentGrid[i][j]));
-                if (agentGrid[i][j] != 0) {
+                int agentId = agentGrid[i][j];
+                this.Grid[i][j].setBackground(getColorAccordingToId(agentId));
+                if (agentId > 0) {
+                    this.Grid[i][j].updateInformations(Taquin.agents.get(agentId-1));
                     this.Grid[i][j].displayInformations();
                 } else {
                     this.Grid[i][j].hideInformations();

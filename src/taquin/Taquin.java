@@ -1,6 +1,7 @@
 package taquin;
 
 import model.Position;
+import ui.Homepage;
 import ui.Window;
 
 import java.util.ArrayList;
@@ -10,25 +11,23 @@ import java.util.Random;
  * Created by Bastien on 12/12/2016.
  */
 public class Taquin {
-    static ArrayList<Agent> agents = new ArrayList<Agent>();
+    public static ArrayList<Agent> agents = new ArrayList<Agent>();
 
-    public static void main(String[] args) {
-        int nbAgents = 6;
+    public static void createGame(int GSize, int nbAgents){
         boolean collision = true;
-        int n = 5;
-        int[][] grid = new int[n][n];
-        Window window = new Window(n,n);
+        int[][] grid = new int[GSize][GSize];
+        Window window = new Window(GSize,GSize);
 
-        for (int j=0; j<n; j++) {
-            for (int k=0; k<n; k++) {
+        for (int j=0; j<GSize; j++) {
+            for (int k=0; k<GSize; k++) {
                 grid[j][k] = 0;
             }
         }
         int i = 0;
-        while (i <= nbAgents) {
+        while (i < nbAgents) {
             collision = false;
-            int x = (int)(Math.random() * n);
-            int y = (int)(Math.random() * n);
+            int x = (int)(Math.random() * GSize);
+            int y = (int)(Math.random() * GSize);
             Position start = new Position(x,y);
             for (Agent a : agents) {
                 if (start.equals(a.getCurrent()))  {
@@ -36,7 +35,7 @@ public class Taquin {
                 }
             }
             if (!collision) {
-                Agent agent = new Agent(i, start, new Position((i/grid.length), i%grid.length));
+                Agent agent = new Agent(i+1, start, new Position((i/grid.length), i%grid.length));
                 agents.add(agent);
                 agent.addObserver(window);
                 grid[x][y] = agent.getIdAgent();
@@ -55,6 +54,12 @@ public class Taquin {
         for (Agent a :agents) {
             new Thread(a).start();
         }
+    }
+
+    public static void main(String[] args) {
+        Homepage homepage = new Homepage();
+        homepage.pack();
+        homepage.setVisible(true);
     }
 
 
