@@ -5,13 +5,12 @@ import ui.Homepage;
 import ui.Window;
 
 import java.util.ArrayList;
-import java.util.Random;
 
 /**
  * Created by Bastien on 12/12/2016.
  */
 public class Taquin {
-    public static ArrayList<Agent> agents = new ArrayList<Agent>();
+    public static ArrayList<Agent> agents = new ArrayList<>();
 
     public static void createGame(int GSize, int nbAgents){
         boolean collision = true;

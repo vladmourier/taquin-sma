@@ -14,14 +14,14 @@ import java.util.Random;
  */
 public class Window extends JFrame implements Observer {
     private String title = "Taquin autonome !";
-    private final int xSize = 600;
-    private final int ySize = 600;
 
     private AgentPanel[][] Grid;
 
 
     public Window(int gridSizeVertical, int gridSizeHorizontal) {
         super();
+        int ySize = 600;
+        int xSize = 600;
         this.setSize(xSize, ySize);
         this.setLocationRelativeTo(null);
         this.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);

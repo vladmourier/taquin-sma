@@ -75,10 +75,6 @@ public class AgentServer extends AgentConnector implements Runnable{
 
     }
 
-    public int getAgentid() {
-        return agentid;
-    }
-
     public String getLastReceivedMessage() {
         return lastReceivedMessage;
     }

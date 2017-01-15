@@ -1,8 +1,6 @@
 package ui;
 
-import model.Position;
 import taquin.Agent;
-import taquin.Taquin;
 
 import javax.swing.*;
 import java.awt.*;
@@ -10,11 +8,11 @@ import java.awt.*;
 /**
  * Created by Vlad on 19/12/2016.
  */
-public class AgentPanel extends JPanel {
+class AgentPanel extends JPanel {
 
-    Label goal;
-    Label ID;
-    Label InPosition;
+    private final Label goal;
+    private final Label ID;
+    private final Label InPosition;
 
     AgentPanel() {
         this.goal = new Label();

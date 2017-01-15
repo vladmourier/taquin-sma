@@ -23,7 +23,7 @@ class AgentClient extends AgentConnector {
             this.BOS.close();
             socket.close();
         } catch (Exception e) {
-//            System.err.println("Tentative de connexion au port : " + (AgentConnector.BASE_SERVER_PORT + agentRecipient));
+            System.err.println("Tentative de connexion au port : " + (AgentConnector.BASE_SERVER_PORT + agentRecipient));
         }
     }
 }
