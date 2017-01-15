@@ -1,5 +1,6 @@
 package ui;
 
+import taquin.Agent;
 import taquin.Taquin;
 
 import javax.swing.*;
@@ -13,19 +14,27 @@ public class Homepage extends JDialog {
     private JButton buttonCancel;
     private JSpinner SpinnerGridSize;
     private JSpinner SpinnerNbPcs;
+    private JSpinner dureeDuSleepAvantSpinner;
 
     public Homepage() {
         setContentPane(contentPane);
         setModal(true);
         getRootPane().setDefaultButton(buttonOK);
 
-        SpinnerGridSize.setModel(new SpinnerNumberModel(1, 1, 10, 1));
-        SpinnerNbPcs.setModel(new SpinnerNumberModel(1, 1, 1, 1));
+        SpinnerGridSize.setModel(new SpinnerNumberModel(2, 2, 10, 1));
+        SpinnerNbPcs.setModel(new SpinnerNumberModel(1, 1, 3, 1));
+        dureeDuSleepAvantSpinner.setModel(new SpinnerNumberModel(0, 0, 500, 50));
+        dureeDuSleepAvantSpinner.addChangeListener(new ChangeListener() {
+            @Override
+            public void stateChanged(ChangeEvent e) {
+                Agent.setSleepValue((int)((JSpinner)e.getSource()).getValue());
+            }
+        });
         SpinnerGridSize.addChangeListener(new ChangeListener() {
             @Override
             public void stateChanged(ChangeEvent e) {
                 int val = (int)((JSpinner)e.getSource()).getValue();
-                SpinnerNbPcs.setModel(new SpinnerNumberModel((int)SpinnerNbPcs.getModel().getValue(), 1,val*val, 1));
+                SpinnerNbPcs.setModel(new SpinnerNumberModel((int)SpinnerNbPcs.getModel().getValue(), 1,(val*val)-1, 1));
             }
         });
 

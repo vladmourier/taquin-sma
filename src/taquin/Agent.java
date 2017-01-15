@@ -1,6 +1,5 @@
 package taquin;
 
-import javafx.geometry.Pos;
 import model.communication.AgentSocket;
 import model.Position;
 import model.communication.events.MessageReceivedEvent;
@@ -10,7 +9,6 @@ import java.util.ArrayList;
 import java.util.Observable;
 import java.util.Random;
 
-import static java.lang.Thread.sleep;
 import static taquin.Directions.*;
 
 /**
@@ -26,6 +24,7 @@ public class Agent extends Observable implements Runnable, MessageReceivedListen
     private Position goal;
 
     private static int[][] grid;
+    private static int sleepValue = 0;
 
     public boolean goalAchieved() {
         return current.equals(goal);
@@ -44,7 +43,7 @@ public class Agent extends Observable implements Runnable, MessageReceivedListen
     }
 
 
-    public void setCurrent(Position current) {
+    private void setCurrent(Position current) {
         this.current = current;
     }
 
@@ -85,12 +84,14 @@ public class Agent extends Observable implements Runnable, MessageReceivedListen
         return safe;
     }
 
-    public boolean move(Directions direction) {
-//        try {
-//            sleep(100);
-//        } catch (Exception e) {
-//            System.err.println(e.getMessage());
-//        }
+    private boolean move(Directions direction) {
+        if(sleepValue>0) {
+            try {
+                Thread.sleep(sleepValue);
+            } catch (Exception e) {
+                System.err.println(e.getMessage());
+            }
+        }
         Position position = getNextPosition(direction);
         boolean safe = isSafeDirection(direction);
 
@@ -166,18 +167,14 @@ public class Agent extends Observable implements Runnable, MessageReceivedListen
         return idAgent;
     }
 
-    public void setIdAgent(int idAgent) {
-        this.idAgent = idAgent;
-    }
-
-    public void sendMessage(int recipient, String msg) {
+    private void sendMessage(int recipient, String msg) {
         if (recipient != this.getIdAgent() && recipient > 0) {
 //            System.out.println("Agent :" + getIdAgent() + "request " + recipient + " to move");
             this.agentSocket.sendMessage(recipient, msg);
         }
     }
 
-    Position getNextPosition(Directions d) {
+    private Position getNextPosition(Directions d) {
         switch (d) {
             case UP:
                 return new Position(Math.max(getCurrent().getX() - 1, 0), getCurrent().getY());
@@ -199,5 +196,9 @@ public class Agent extends Observable implements Runnable, MessageReceivedListen
     public void messageReceived(MessageReceivedEvent event) {
 //        System.out.println("Je suis : " + idAgent + "     Reçu : " + event.getSource().getLastReceivedMessage());
         messageQueue.add(event.getSource().getLastReceivedMessage());
+    }
+
+    public static void setSleepValue(int newSleepValue){
+        sleepValue = newSleepValue;
     }
 }
